@@ -1,6 +1,7 @@
 package xyz.tildejustin.stater.mixin;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.ControllablePlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -46,7 +47,7 @@ public abstract class MinecraftMixin {
         if (this.playerEntity == null) return;
         if (this.currentScreen == null && !this.paused) {
             StateOutputHelper.outputState("inworld,unpaused");
-        } else if (this.paused) {
+        } else if (this.paused || this.currentScreen instanceof GameMenuScreen) {
             StateOutputHelper.outputState("inworld,paused");
         } else {
             StateOutputHelper.outputState("inworld,gamescreenopen");
