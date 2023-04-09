@@ -41,7 +41,7 @@ public final class StateOutputHelper {
     private static void outputStateInternal(String string) {
         try {
             Files.write(OUT_PATH, string.getBytes(StandardCharsets.UTF_8));
-            Stater.log("WorldPreview State: " + string);
+            Stater.log("State: " + string);
         } catch (IOException ignored) {
             Stater.log("Failed to write state output!");
         }
