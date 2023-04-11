@@ -1,6 +1,7 @@
 package xyz.tildejustin.stater;
 
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,6 +17,7 @@ public final class StateOutputHelper {
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
     public static boolean titleHasEverLoaded = false;
     private static String lastOutput = "";
+    private static RandomAccessFile stateFile;
 
 
     private StateOutputHelper() {
@@ -40,8 +42,16 @@ public final class StateOutputHelper {
 
     private static void outputStateInternal(String string) {
         try {
-            Files.write(OUT_PATH, string.getBytes(StandardCharsets.UTF_8));
-            Stater.log("State: " + string);
+            if(stateFile == null) { // opening file only once is better for performance
+                Files.write(OUT_PATH, string.getBytes(StandardCharsets.UTF_8));
+                stateFile = new RandomAccessFile(OUT_PATH.toString(), "rw");
+            }
+            stateFile.setLength(0); // clear existing file contents
+            stateFile.seek(0); // move pointer back to start of file
+            stateFile.write(string.getBytes(StandardCharsets.UTF_8));
+            if (Stater.Config.shouldLog()) {
+                Stater.log("State: " + string);
+            }
         } catch (IOException ignored) {
             Stater.log("Failed to write state output!");
         }

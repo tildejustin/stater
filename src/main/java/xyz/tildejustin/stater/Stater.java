@@ -11,19 +11,19 @@ import java.util.logging.Logger;
 public class Stater implements ModInitializer {
 	static Logger LOGGER = Logger.getLogger("stater");
 	static File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(), "stater.json");
-	public static long log_interval = 1000;
-
+	public static Config config;
 	public static void log(String message) {
 		LOGGER.info(message);
 	}
 
+	@SuppressWarnings("InstantiationOfUtilityClass")
 	@Override
 	public void onInitialize() {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		try {
 			if (CONFIG_FILE.createNewFile()) {
 				try (Writer writer = new FileWriter(CONFIG_FILE)) {
-					gson.toJson(new Config(log_interval), writer);
+					gson.toJson(new Config(1000, true), writer);
 					log("wrote config file");
 				}
 			}
@@ -36,26 +36,32 @@ public class Stater implements ModInitializer {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		Config config = gson.fromJson(bufferedReader, Config.class);
-		Stater.log_interval = config.getInterval();
-		log("read config file, log interval set to " + config.getInterval());
+		config = gson.fromJson(bufferedReader, Config.class);
+		log("read config file, log interval set to " + Config.getInterval());
 
 	}
 
-	static class Config {
-		private final long interval;
+	public static class Config {
+		private static long interval;
+		private static boolean shouldLog;
 
 		@SuppressWarnings("unused")
 		Config() {
-			this.interval = Stater.log_interval;
+			Config.interval = 1000;
+			Config.shouldLog = true;
 		}
 
-		Config(long interval) {
-			this.interval = interval;
+		Config(long interval, boolean shouldLog) {
+			Config.interval = interval;
+			Config.shouldLog = shouldLog;
 		}
 
-		public long getInterval() {
+		public static long getInterval() {
 			return interval;
+		}
+
+		public static boolean shouldLog() {
+			return shouldLog;
 		}
 	}
 }

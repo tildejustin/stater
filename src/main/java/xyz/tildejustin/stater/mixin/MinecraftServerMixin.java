@@ -13,7 +13,7 @@ import xyz.tildejustin.stater.Stater;
 public abstract class MinecraftServerMixin {
     @ModifyConstant(method = "prepareWorlds", constant = @Constant(longValue = 1000L))
     private long modifyLoggingInterval(long interval) {
-        return Stater.log_interval;
+        return Stater.Config.getInterval();
     }
 
     @ModifyArg(method = "prepareWorlds",
