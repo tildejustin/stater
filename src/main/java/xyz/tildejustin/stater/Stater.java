@@ -16,7 +16,6 @@ public class Stater implements ModInitializer {
 		LOGGER.info(message);
 	}
 
-	@SuppressWarnings("InstantiationOfUtilityClass")
 	@Override
 	public void onInitialize() {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -37,31 +36,31 @@ public class Stater implements ModInitializer {
 			throw new RuntimeException(e);
 		}
 		config = gson.fromJson(bufferedReader, Config.class);
-		log("read config file, log interval set to " + Config.getInterval());
+		log("log interval: " + config.getInterval() + ", logging state: " + config.shouldLog());
 
 	}
 
 	public static class Config {
-		private static long interval;
-		private static boolean shouldLog;
+		private final long interval;
+		private final boolean logging;
 
 		@SuppressWarnings("unused")
 		Config() {
-			Config.interval = 1000;
-			Config.shouldLog = true;
+			this.interval = 1000;
+			this.logging = true;
 		}
 
-		Config(long interval, boolean shouldLog) {
-			Config.interval = interval;
-			Config.shouldLog = shouldLog;
+		Config(long interval, boolean logging) {
+			this.interval = interval;
+			this.logging = logging;
 		}
 
-		public static long getInterval() {
+		public long getInterval() {
 			return interval;
 		}
 
-		public static boolean shouldLog() {
-			return shouldLog;
+		public boolean shouldLog() {
+			return logging;
 		}
 	}
 }

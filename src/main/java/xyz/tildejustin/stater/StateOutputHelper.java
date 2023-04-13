@@ -49,7 +49,7 @@ public final class StateOutputHelper {
             stateFile.setLength(0); // clear existing file contents
             stateFile.seek(0); // move pointer back to start of file
             stateFile.write(string.getBytes(StandardCharsets.UTF_8));
-            if (Stater.Config.shouldLog()) {
+            if (Stater.config.shouldLog()) {
                 Stater.log("State: " + string);
             }
         } catch (IOException ignored) {
